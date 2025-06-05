@@ -1,15 +1,11 @@
-import logging
-from fastapi import APIRouter, Depends, Path, status, Request
+from fastapi import APIRouter, Depends, Path, status
+from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
 from app.core.security import get_current_user
 from app.models.user import User
 from app.schemas.user import UserCreate, UserOut, UserUpdate, LoginDTO, RefreshTokenDTO
 from app.services import user_service
 from app.db.session import get_db
-from fastapi.security import OAuth2PasswordRequestForm
-from fastapi import HTTPException
-from sqlalchemy import text
-from fastapi import Body
 
 router = APIRouter()
 
@@ -26,6 +22,17 @@ def login(login_data: LoginDTO, db: Session = Depends(get_db)):
 @router.post("/refresh")
 def refresh_token(dto: RefreshTokenDTO, db: Session = Depends(get_db)):
     return user_service.refresh_token(dto, db)
+
+# Logout
+
+
+@router.post("/logout", status_code=status.HTTP_200_OK)
+def logout(current_user: User = Depends(get_current_user)):
+    return JSONResponse(
+        status_code=status.HTTP_200_OK,
+        content={
+            "message": "Logout exitoso. El token debe ser eliminado del lado del cliente."}
+    )
 
 # Crear usuario
 

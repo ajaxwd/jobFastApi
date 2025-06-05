@@ -1,10 +1,13 @@
+import uuid
 from sqlalchemy.orm import Session
 from app.models.user import User
-from app.schemas.user import UserCreate, UserUpdate, LoginDTO
+from app.schemas.user import UserCreate, UserUpdate, LoginDTO, RefreshTokenDTO
 from fastapi import HTTPException, status
 from app.utils.security import verify_password, hash_password
-from app.utils.jwt import create_access_token
+from app.utils.jwt import create_access_token, create_refresh_token
 import logging
+from app.core.config import settings
+from jose import JWTError, jwt
 
 # Configurar logging
 logging.basicConfig(level=logging.DEBUG)
@@ -12,14 +15,15 @@ logger = logging.getLogger(__name__)
 
 # Login
 
+
 def login_user(login_data: LoginDTO, db: Session):
     logger.debug(f"Attempting login for email: {login_data.email}")
     user = db.query(User).filter(User.email == login_data.email).first()
-    
+
     if not user:
         logger.error(f"No user found with email: {login_data.email}")
         raise HTTPException(status_code=401, detail="Invalid credentials")
-        
+
     if not verify_password(login_data.password, user.hashed_password):
         logger.error(f"Invalid password for user: {login_data.email}")
         raise HTTPException(status_code=401, detail="Invalid credentials")
@@ -27,17 +31,40 @@ def login_user(login_data: LoginDTO, db: Session):
     logger.debug(f"User found with ID: {user.id}")
     token_data = {"sub": str(user.id), "email": user.email}
     logger.debug(f"Creating token with data: {token_data}")
-    
-    access_token = create_access_token(token_data)
-    logger.debug(f"Generated token: {access_token}")
-    
-    return {"access_token": access_token, "token_type": "bearer"}
 
+    access_token = create_access_token(token_data)
+    refresh_token = create_refresh_token(token_data)
+    logger.debug(f"Generated access token: {access_token}")
+    logger.debug(f"Generated refresh token: {refresh_token}")
+
+    return {"access_token": access_token, "refresh_token": refresh_token, "token_type": "bearer"}
+
+# Refresh Token
+
+
+def refresh_token(dto: RefreshTokenDTO, db: Session):
+    try:
+        payload = jwt.decode(dto.refresh_token, settings.REFRESH_SECRET_KEY, algorithms=[
+                             settings.ALGORITHM])
+        user_id = payload.get("sub")
+        if user_id is None:
+            raise HTTPException(status_code=401, detail="Token inválido")
+
+        user = db.query(User).filter(User.id == int(user_id)).first()
+        if not user:
+            raise HTTPException(
+                status_code=404, detail="Usuario no encontrado")
+
+        new_access_token = create_access_token(
+            {"sub": str(user.id), "email": user.email})
+        return {"access_token": new_access_token, "token_type": "bearer"}
+
+    except JWTError:
+        raise HTTPException(
+            status_code=401, detail="Token inválido o expirado")
 
 # Crear usuario
 
-
-import uuid
 
 def create_user(db: Session, user: UserCreate):
     # Check if email already exists
@@ -56,10 +83,10 @@ def create_user(db: Session, user: UserCreate):
     # Create user with the new UID
     user_data = user.model_dump(exclude={"password"})
     user_data["uid"] = new_uid
-    
+
     hashed_pw = hash_password(user.password)
     db_user = User(**user_data, hashed_password=hashed_pw)
-    
+
     db.add(db_user)
     db.commit()
     db.refresh(db_user)

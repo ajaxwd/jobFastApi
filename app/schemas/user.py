@@ -51,3 +51,7 @@ class UserUpdate(BaseModel):
 class LoginDTO(BaseModel):
     email: EmailStr
     password: str
+
+
+class RefreshTokenDTO(BaseModel):
+    refresh_token: str

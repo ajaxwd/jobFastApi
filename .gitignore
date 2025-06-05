@@ -1,0 +1,26 @@
+# Virtual Environment
+venv/
+.venv/
+
+# Python Cache
+__pycache__/
+*.pyc
+
+# IDE Configuration
+.idea/
+.vscode/
+
+# Local Database
+*.db
+*.sqlite
+
+# Secret Files
+.env
+secrets.txt
+
+# Temporary Files
+*.tmp
+
+# Test
+.pytest_cache
+htmlcov/

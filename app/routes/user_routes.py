@@ -23,7 +23,7 @@ def login(login_data: LoginDTO, db: Session = Depends(get_db)):
 # Crear usuario
 
 
-@router.post("/register", response_model=UserOut)
+@router.post("/", response_model=UserOut)
 def create_user(user: UserCreate, db: Session = Depends(get_db)):
     return user_service.create_user(db, user)
 
@@ -36,6 +36,10 @@ def get_users(db: Session = Depends(get_db)):
 
 # Obtener usuario por id o uid
 
+
+@router.get("/me", response_model=UserOut)
+def get_me(current_user: User = Depends(get_current_user)):
+    return current_user
 
 @router.get("/{identifier}", response_model=UserOut)
 def get_user(identifier: str, db: Session = Depends(get_db)):

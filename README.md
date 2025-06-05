@@ -1,59 +1,145 @@
-# Reverse Job Board API
+# Job Backend API
 
-This project provides a basic API for a reverse job board built with [FastAPI](https://fastapi.tiangolo.com/). It exposes endpoints to manage users and notifications and includes models for companies, job postings and applications.
+API REST construida con FastAPI para gestionar ofertas de trabajo y perfiles de usuarios.
 
-## Features
+## 🚀 Características
 
-- **User management**: create, update, delete and authenticate users with JWT tokens.
-- **Notifications**: create and list notifications for users or companies.
-- **SQLAlchemy models**: users, companies, postings, applications and more.
-- **SQLite database** by default for quick local development.
-- **Automated tests** using `pytest`.
+- Autenticación JWT
+- Gestión de usuarios
+- Base de datos SQLite
+- Documentación automática con Swagger
+- Dockerizado para fácil despliegue
 
-## Requirements
+## 📋 Prerrequisitos
 
 - Python 3.11+
-- The packages listed in `requirements.txt`
+- Docker y Docker Compose (opcional)
 
-## Installation
+## 🔧 Instalación
+
+### Instalación Local
+
+1. Clonar el repositorio:
 
 ```bash
-# clone the repository and change to the project directory
+git clone <url-del-repositorio>
+cd job-backend
+```
+
+2. Crear y activar entorno virtual:
+
+```bash
+python -m venv venv
+source venv/bin/activate  # En Windows: venv\Scripts\activate
+```
+
+3. Instalar dependencias:
+
+```bash
 pip install -r requirements.txt
 ```
 
-## Running the application
-
-Execute the helper script in `cli/run.py` which runs `uvicorn` with hot reload:
+4. Ejecutar la aplicación:
 
 ```bash
-python cli/run.py
+uvicorn app.main:app --reload
 ```
 
-The API will be available at `http://127.0.0.1:8000`. Interactive documentation is provided at `/docs`.
+### Instalación con Docker
 
-## Running the tests
+1. Construir y levantar los contenedores:
+
+```bash
+docker-compose up --build
+```
+
+2. Para ejecutar en segundo plano:
+
+```bash
+docker-compose up -d
+```
+
+3. Para detener los contenedores:
+
+```bash
+docker-compose down
+```
+
+## 📚 Documentación de la API
+
+Una vez que la aplicación esté corriendo, puedes acceder a la documentación interactiva:
+
+- Swagger UI: http://localhost:8000/docs
+- ReDoc: http://localhost:8000/redoc
+
+## 🔐 Endpoints Principales
+
+### Autenticación
+
+- `POST /users/login` - Iniciar sesión
+- `POST /users/register` - Registrar nuevo usuario
+- `GET /users/me` - Obtener información del usuario actual
+
+### Usuarios
+
+- `GET /users` - Listar todos los usuarios
+- `GET /users/{id}` - Obtener usuario por ID
+- `PUT /users/{id}` - Actualizar usuario
+- `DELETE /users/{id}` - Eliminar usuario
+
+## 🛠️ Estructura del Proyecto
 
 ```
+job-backend/
+├── app/
+│   ├── core/           # Configuraciones centrales
+│   ├── db/            # Configuración de base de datos
+│   ├── models/        # Modelos SQLAlchemy
+│   ├── routes/        # Rutas de la API
+│   ├── schemas/       # Esquemas Pydantic
+│   ├── services/      # Lógica de negocio
+│   └── utils/         # Utilidades
+├── tests/             # Tests unitarios
+├── Dockerfile         # Configuración de Docker
+├── docker-compose.yml # Configuración de Docker Compose
+├── requirements.txt   # Dependencias del proyecto
+└── README.md         # Este archivo
+```
+
+## 🧪 Ejecutar Tests
+
+```bash
 pytest
 ```
 
-## Configuration
+## 🔄 Variables de Entorno
 
-The application reads configuration values such as token secrets from environment variables. Default values are defined in `app/core/config.py` and can be overridden using a `.env` file.
+El proyecto utiliza las siguientes variables de entorno (configuradas en `app/core/config.py`):
 
-## Project structure
+- `SECRET_KEY`: Clave secreta para JWT
+- `ALGORITHM`: Algoritmo para JWT (por defecto: "HS256")
+- `ACCESS_TOKEN_EXPIRE_MINUTES`: Tiempo de expiración del token (por defecto: 60)
 
-```
-app/            # FastAPI application
-  core/         # configuration and security utilities
-  db/           # database models and session
-  models/       # SQLAlchemy models
-  routes/       # API routes
-  schemas/      # Pydantic schemas
-  services/     # business logic
-cli/            # helper scripts
-tests/          # pytest suite
-```
+## 📦 Docker
 
-Feel free to modify or extend this project to suit your needs.
+El proyecto está dockerizado para facilitar su despliegue. Los archivos principales son:
+
+- `Dockerfile`: Define la imagen de la aplicación
+- `docker-compose.yml`: Configura los servicios
+- `.dockerignore`: Excluye archivos innecesarios del build
+
+### Puertos
+
+- `8000`: API FastAPI
+
+## 🤝 Contribuir
+
+1. Fork el proyecto
+2. Crea tu rama de características (`git checkout -b feature/AmazingFeature`)
+3. Commit tus cambios (`git commit -m 'Add some AmazingFeature'`)
+4. Push a la rama (`git push origin feature/AmazingFeature`)
+5. Abre un Pull Request
+
+## 📝 Licencia
+
+Este proyecto está bajo la Licencia MIT - ver el archivo [LICENSE](LICENSE) para más detalles.

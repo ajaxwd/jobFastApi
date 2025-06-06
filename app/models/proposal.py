@@ -8,6 +8,12 @@ from app.db.base import Base
 
 
 class Proposal(Base):
+    """
+    Modelo que representa una propuesta de trabajo.
+
+    Cada propuesta está asociada a un usuario y una empresa.
+    Las propuestas pueden tener diferentes estados (pending, accepted, rejected).
+    """
     __tablename__ = "proposals"
 
     id = Column(Integer, primary_key=True, index=True)

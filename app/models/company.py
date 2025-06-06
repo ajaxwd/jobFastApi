@@ -7,6 +7,12 @@ from app.db.base import Base
 
 
 class Company(Base):
+    """
+    Modelo que representa una empresa en el sistema.
+
+    Cada empresa tiene un nombre, email, sitio web, descripción y fecha de creación.
+    Las empresas se relacionan con las publicaciones de trabajo a través de la clave foránea company_id.
+    """
     __tablename__ = "companies"
 
     id = Column(Integer, primary_key=True, index=True)

@@ -8,6 +8,14 @@ from app.db.base import Base
 
 
 class Application(Base):
+    """
+    Modelo que representa una aplicación a una publicación de trabajo.
+
+    Cada aplicación está asociada a un usuario y una publicación.
+    Las aplicaciones pueden tener diferentes estados (submitted, in_review, rejected, hired, etc.).
+    Las aplicaciones se relacionan con el usuario a través de la clave foránea user_id.
+    Las aplicaciones se relacionan con la publicación a través de la clave foránea posting_id.
+    """
     __tablename__ = "applications"
 
     id = Column(Integer, primary_key=True, index=True)

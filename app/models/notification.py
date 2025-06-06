@@ -8,6 +8,13 @@ from app.db.base import Base
 
 
 class Notification(Base):
+    """
+    Modelo que representa una notificación en el sistema.
+
+    Cada notificación está asociada a un usuario o una empresa y puede tener un enlace a una propuesta, entrevista, etc.
+    Las notificaciones se relacionan con el usuario a través de la clave foránea user_id.
+    Las notificaciones se relacionan con la empresa a través de la clave foránea company_id.
+    """
     __tablename__ = "notifications"
 
     id = Column(Integer, primary_key=True, index=True)

@@ -8,6 +8,13 @@ from app.db.base import Base
 
 
 class Interview(Base):
+    """
+    Modelo que representa una entrevista para una propuesta.
+
+    Cada entrevista está asociada a un usuario, una empresa y una propuesta.
+    Las entrevistas se relacionan con el usuario a través de la clave foránea user_id.
+    Las entrevistas se relacionan con la empresa a través de la clave foránea company_id.
+    """
     __tablename__ = "interviews"
 
     id = Column(Integer, primary_key=True, index=True)

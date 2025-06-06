@@ -3,6 +3,13 @@ from app.db.base import Base
 
 
 class User(Base):
+    """
+    Modelo que representa un usuario en el sistema.
+
+    Cada usuario tiene un nombre, email, contraseña, foto, stack, experiencia, modalidad, disponibilidad, portfolio y si está abierto a ofertas.
+    Las aplicaciones se relacionan con el usuario a través de la clave foránea user_id.
+    Las aplicaciones se relacionan con la publicación a través de la clave foránea posting_id.
+    """
     __tablename__ = "users"
 
     id = Column(Integer, primary_key=True, index=True)

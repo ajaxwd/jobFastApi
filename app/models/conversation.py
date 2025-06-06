@@ -8,6 +8,12 @@ from app.db.base import Base
 
 
 class Conversation(Base):
+    """
+    Modelo que representa una conversación entre dos usuarios.
+
+    Cada conversación está asociada a dos usuarios y puede tener varios mensajes.
+    Las conversaciones se relacionan con los usuarios a través de las claves foráneas sender_id y receiver_id.
+    """
     __tablename__ = "conversations"
 
     id = Column(Integer, primary_key=True, index=True)
